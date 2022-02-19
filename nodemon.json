@@ -1,0 +1,3 @@
+{
+  "ignore": ["front-contact-app/*", "database/db-contact.json"]
+}
