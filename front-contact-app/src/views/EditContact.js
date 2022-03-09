@@ -9,7 +9,7 @@ function EditContact(props) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [nohp, setNohp] = useState('')
-  const [id, setId] = useState(0)
+  const [_id, setId] = useState(0)
   const [errors, setErrors] = useState([])
 
   const submitHandler = async (e) => {
@@ -17,8 +17,8 @@ function EditContact(props) {
     const response = await axios.put('http://localhost:8000/api/contact', {
       name,
       email,
-      number: nohp,
-      id,
+      phone: nohp,
+      _id,
     })
     const { errors } = response.data
     if (errors) {
@@ -34,8 +34,8 @@ function EditContact(props) {
     if (state?.name) {
       setName(state?.name)
       setEmail(state?.email)
-      setNohp(state?.number)
-      setId(state?.id)
+      setNohp(state?.phone)
+      setId(state?._id)
     } else {
       navigate('/')
     }

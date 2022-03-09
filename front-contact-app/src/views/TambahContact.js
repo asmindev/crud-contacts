@@ -15,7 +15,7 @@ function TambahContact() {
     const response = await axios.post('http://localhost:8000/api/contact', {
       name,
       email,
-      number: nohp,
+      phone: nohp,
     })
     const { errors } = response.data
     if (errors) {
@@ -23,7 +23,7 @@ function TambahContact() {
     } else {
       navigate('/', {
         state: {
-          msg: { name, email, number: nohp, string: 'sukses tambah contact' },
+          msg: { name, email, phone: nohp, string: 'sukses tambah contact' },
         },
       })
     }

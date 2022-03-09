@@ -2,26 +2,28 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const { body, validationResult, check } = require('express-validator')
+const Contact = require('./models/Contact')
+require('dotenv').config()
 
-const contact = require('./database/contact.js')
 
 const app = express()
-const port = 8000
+const port = process.env.PORT || 5000
 
 app.use(bodyParser.json())
 app.use(cors())
 app.get('/', (req, res) => {
   res.json({ message: 'Selamat datang Di Web server nodejs' })
 })
-app.get('/api/contact', (req, res) => {
+app.get('/api/contact', async (req, res) => {
   res.statusCode = 200
-  res.json(contact.loadContacts())
+  const contacts = await Contact.find()
+  res.json(contacts)
 })
 app.post(
   '/api/contact',
   [
     check('email', 'Email tidak valid').isEmail(),
-    check('number', 'Nomor Handphone tidak valid').isMobilePhone('id-ID'),
+    check('phone', 'Nomor Handphone tidak valid').isMobilePhone('id-ID'),
   ],
   (req, res) => {
     const errors = validationResult(req)
@@ -30,32 +32,36 @@ app.post(
     } else {
       const { body } = req
       res.statusCode = 200
-      return res.json(contact.addNewContact(body))
+      const result = Contact.insertMany(body)
+      return res.json(result)
     }
   }
 )
-app.delete('/api/contact/', (req, res) => {
-  const { id } = req.body
-  console.log(req.body)
+app.delete('/api/contact/', async (req, res) => {
+  const { _id } = req.body
   res.statusCode = 200
-  return res.json(contact.deleteContact(id))
+  result = await Contact.findByIdAndDelete({_id: _id})
+  return res.json({status: 'ok'})
 })
 app.put(
   '/api/contact',
   [
     check('email', 'email tidak valid').isEmail(),
-    check('number', 'nomor handphone tidak valid').isMobilePhone('id-ID'),
+    check('phone', 'nomor handphone tidak valid').isMobilePhone('id-ID'),
   ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       return res.json(errors)
     } else {
       res.statusCode = 200
-      return res.json(contact.editContact(req.body))
+      const data = await Contact.findByIdAndUpdate(req.body._id, req.body)
+      console.log(data)
+      return res.json(data)
     }
   }
 )
 app.listen(port, () => {
+  require('./database/')
   console.log('Server is listening on port ' + port)
 })

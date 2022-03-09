@@ -10,12 +10,13 @@ export default function Home() {
   const [contacts, setContacts] = useState([])
   const loadContacts = useCallback(async () => {
     const response = await axios.get('http://localhost:8000/api/contact')
+    console.log(response.data)
     setContacts(response.data)
   }, [])
   const deleteContact = async (e) => {
     const { id } = e.target
     const response = await axios.delete(`http://localhost:8000/api/contact/`, {
-      data: { id },
+      data: { _id: id },
     })
     if (response.data.status === 'ok') {
       loadContacts()
@@ -24,10 +25,10 @@ export default function Home() {
   useEffect(() => {
     loadContacts()
     if (location.state?.msg && !sleep) {
-      const id = setTimeout(() => {
+      const idTimeout = setTimeout(() => {
         navigate(location.pathname, { replace: true })
       }, 5000)
-      setSleep(id)
+      setSleep(idTimeout)
     }
   }, [loadContacts, navigate, location, sleep])
   return (
@@ -101,7 +102,7 @@ export default function Home() {
                 </thead>
                 <tbody className="bg-white divide-y divide-indigo-100">
                   {contacts?.map((contact) => (
-                    <tr key={contact.id}>
+                    <tr key={contact._id}>
                       <td className="pl-4 py-3 whitespace-nowrap">
                         <div className="text-sm text-gray-500">
                           {(counter += 1)}
@@ -119,7 +120,7 @@ export default function Home() {
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <div className="text-sm text-gray-500">
-                          {contact.number}
+                          {contact.phone}
                         </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
@@ -138,7 +139,7 @@ export default function Home() {
                             </Link>
                           </button>
                           <button
-                            id={contact.id}
+                            id={contact._id}
                             onClick={deleteContact}
                             type="button"
                             className="rounded bg-gray-500 text-gray-50 px-2 py-1 transition-all duration-300 hover:bg-gray-600 active:bg-gray-600"
