@@ -10,7 +10,10 @@ In the project directory, you can run:
 cd crud-contact
 ```
 ### edit enviroment variables
+```
+nvim .env
 MONGODB_URI="your url mongodb"
+```
 
 ```sh
 yarn install
