@@ -8,6 +8,11 @@ In the project directory, you can run:
 
 ```sh
 cd crud-contact
+```
+### edit enviroment variables
+MONGODB_URI="your url mongodb"
+
+```sh
 yarn install
 yarn watch
 
